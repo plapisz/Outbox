@@ -20,7 +20,7 @@ internal sealed class OutboxEventDispatcher : IOutboxEventDispatcher
         _serializer = serializer;
     }
 
-    public async Task DispatchOutboxEvent(OutboxEventSource outboxEventSource)
+    public async Task DispatchOutboxEventAsync(OutboxEventSource outboxEventSource)
     {
         var outboxEvents = outboxEventSource.OutboxEvents;
         if (outboxEvents == null || !outboxEvents.Any())
@@ -37,7 +37,7 @@ internal sealed class OutboxEventDispatcher : IOutboxEventDispatcher
             var now = _clock.CurrentDate();
 
             var message = new OutboxMessage(type, data, now);
-            await repository.Add(message);
+            await repository.AddAsync(message);
         }
     }
 }

@@ -4,5 +4,5 @@ namespace Outbox.Dispatchers;
 
 internal interface IOutboxEventDispatcher
 {
-    Task DispatchOutboxEvent(OutboxEventSource sender);
+    Task DispatchOutboxEventAsync(OutboxEventSource outboxEventSource);
 }

@@ -16,7 +16,7 @@ public static class Extensions
 
         using var serviceProvider = services.BuildServiceProvider();
         var outboxEventDispatcher = serviceProvider.GetRequiredService<IOutboxEventDispatcher>();
-        OutboxEventSource.OutboxEventsDispatched += outboxEventDispatcher.DispatchOutboxEvent;
+        OutboxEventSource.OutboxEventsDispatched += outboxEventDispatcher.DispatchOutboxEventAsync;
 
         return services;
     }

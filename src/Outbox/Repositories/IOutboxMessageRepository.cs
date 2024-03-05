@@ -4,5 +4,7 @@ namespace Outbox.Repositories;
 
 public interface IOutboxMessageRepository
 {
-    Task Add(OutboxMessage outboxMessage);
+    Task AddAsync(OutboxMessage outboxMessage);
+    Task DeleteAsync(OutboxMessage outboxMessage);
+    Task<IEnumerable<OutboxMessage>> GetAllAsync();
 }
