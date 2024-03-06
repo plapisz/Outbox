@@ -2,5 +2,6 @@
 
 internal interface IOutboxEventSerializer
 {
-    public string Serialize<T>(T value);
+    string Serialize<T>(T value);
+    object Deserialize(string value, Type type);
 }

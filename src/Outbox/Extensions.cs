@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Outbox.Dispatchers;
+using Outbox.Events;
+using Outbox.Events.Handlers;
 using Outbox.Serializers;
 using Outbox.Time;
 using Outbox.Types;
@@ -17,6 +19,15 @@ public static class Extensions
         using var serviceProvider = services.BuildServiceProvider();
         var outboxEventDispatcher = serviceProvider.GetRequiredService<IOutboxEventDispatcher>();
         OutboxEventSource.OutboxEventsDispatched += outboxEventDispatcher.DispatchOutboxEventAsync;
+
+        return services;
+    }
+
+    public static IServiceCollection AddOutboxEventHandler<TOutboxEvent, TOutboxEventHandler>(this IServiceCollection services)
+        where TOutboxEvent : class, IOutboxEvent
+        where TOutboxEventHandler : class, IOutboxEventHandler<TOutboxEvent>
+    {
+        services.AddScoped<IOutboxEventHandler<TOutboxEvent>, TOutboxEventHandler>();
 
         return services;
     }
