@@ -4,21 +4,24 @@ namespace Outbox.Samples.Api.Repositories;
 
 public sealed class OrderRepository : IOrderRepository
 {
-    private readonly List<Order> orders = new();
+    private readonly List<Order> _orders = [];
 
     public Task AddAsync(Order order)
     {
-        orders.Add(order);
+        _orders.Add(order);
+
         return Task.CompletedTask;
     }
 
     public Task<Order> GetAsync(Guid id)
     {
-        throw new NotImplementedException();
+        var order = _orders.SingleOrDefault(o => o.Id == id);
+
+        return Task.FromResult(order);
     }
 
     public Task UpdateAsync(Order order)
     {
-        throw new NotImplementedException();
+        return Task.CompletedTask;
     }
 }

@@ -5,3 +5,11 @@ GET {{url}}
 Accept: application/json
 
 ###
+POST {{url}}/order
+Accept: application/json
+Content-Type: application/json
+
+{
+  "number": "test-0001",
+  "customerEmail": "johndoe@email.com"
+}

@@ -2,6 +2,7 @@
 using Outbox.Dispatchers;
 using Outbox.Events;
 using Outbox.Events.Handlers;
+using Outbox.Repositories;
 using Outbox.Serializers;
 using Outbox.Time;
 using Outbox.Types;
@@ -15,6 +16,7 @@ public static class Extensions
         services.AddSingleton<IOutboxEventDispatcher, OutboxEventDispatcher>();
         services.AddSingleton<IClock, Clock>();
         services.AddSingleton<IOutboxEventSerializer, JsonOutboxEventSerializer>();
+        services.AddSingleton<IOutboxMessageRepository, TemporaryInMemoryOutboxMessageRepository>();
 
         using var serviceProvider = services.BuildServiceProvider();
         var outboxEventDispatcher = serviceProvider.GetRequiredService<IOutboxEventDispatcher>();
