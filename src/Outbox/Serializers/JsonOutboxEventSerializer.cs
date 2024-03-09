@@ -10,7 +10,7 @@ internal sealed class JsonOutboxEventSerializer : IOutboxEventSerializer
         PropertyNameCaseInsensitive = true
     };
 
-    public string Serialize<T>(T value) => JsonSerializer.Serialize(value, SerializerOptions);
+    public string Serialize(object value, Type type) => JsonSerializer.Serialize(value, type, SerializerOptions);
 
     public object Deserialize(string value, Type type) => JsonSerializer.Deserialize(value, type, SerializerOptions);
 }

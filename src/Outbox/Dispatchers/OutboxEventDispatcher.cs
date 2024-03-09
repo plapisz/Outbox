@@ -30,8 +30,8 @@ internal sealed class OutboxEventDispatcher : IOutboxEventDispatcher
 
         foreach (var outboxEvent in outboxEvents)
         {
-            var type = outboxEvent.GetType().Name;
-            var data = _serializer.Serialize(outboxEvent);
+            var type = outboxEvent.GetType().FullName;
+            var data = _serializer.Serialize(outboxEvent, outboxEvent.GetType());
             var now = _clock.CurrentDate();
 
             var message = new OutboxMessage(type, data, now);
