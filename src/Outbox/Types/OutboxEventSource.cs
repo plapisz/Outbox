@@ -20,5 +20,6 @@ public abstract class OutboxEventSource
     public void DispatchOutboxEvents()
     {
         OutboxEventsDispatched?.Invoke(this);
+        _outboxEvents.Clear();
     }
 }

@@ -1,4 +1,5 @@
 @url = http://localhost:5000
+@orderId = da49175a-aacf-40c7-827b-895fa3c44b14
 
 ###
 GET {{url}}
@@ -13,3 +14,7 @@ Content-Type: application/json
   "number": "test-0001",
   "customerEmail": "johndoe@email.com"
 }
+
+###
+PUT {{url}}/order/{{orderId}}/confirm
+Accept: application/json
