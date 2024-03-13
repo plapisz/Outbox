@@ -4,7 +4,7 @@ namespace Outbox.Repositories;
 
 internal sealed class TemporaryInMemoryOutboxMessageRepository : IOutboxMessageRepository
 {
-    private readonly List<OutboxMessage> _outboxMessages = [];
+    private static readonly List<OutboxMessage> _outboxMessages = [];
 
     public Task AddAsync(OutboxMessage outboxMessage)
     {

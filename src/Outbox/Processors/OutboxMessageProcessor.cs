@@ -28,7 +28,9 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
 
         foreach (var message in messages)
         {
-            var type = Assembly.GetExecutingAssembly().GetTypes().SingleOrDefault(x => x.Name == message.Type);
+            var type = AppDomain.CurrentDomain.GetAssemblies()
+                .SelectMany(a => a.GetTypes())
+                .SingleOrDefault(x => x.FullName == message.Type);
             var @event = (IOutboxEvent)_outboxEventSerializer.Deserialize(message.Data, type);
 
             // Find and call handler
