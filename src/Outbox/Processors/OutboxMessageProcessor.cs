@@ -1,4 +1,6 @@
-﻿using Outbox.Events;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Outbox.Events;
+using Outbox.Events.Handlers;
 using Outbox.Repositories;
 using Outbox.Serializers;
 using System.Reflection;
@@ -26,16 +28,31 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
             return;
         }
 
-        foreach (var message in messages)
+        foreach (var message in messages.ToList())
         {
             var type = AppDomain.CurrentDomain.GetAssemblies()
                 .SelectMany(a => a.GetTypes())
                 .SingleOrDefault(x => x.FullName == message.Type);
             var @event = (IOutboxEvent)_outboxEventSerializer.Deserialize(message.Data, type);
 
-            // Find and call handler
-            // When processing successfully then remove from database
-            // What when fail?
+            using var scope = _serviceProvider.CreateScope();
+            {
+                var handlerType = typeof(IOutboxEventHandler<>).MakeGenericType(@event.GetType());
+                var handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+                try
+                {
+                    await (Task)handlerType
+                        .GetMethod(nameof(IOutboxEventHandler<IOutboxEvent>.HandleAsync))
+                        ?.Invoke(handler, new[] { @event });
+
+                    await _outboxMessageRepository.DeleteAsync(message);
+                }
+                catch (Exception ex)
+                {
+                    // TODO: What when fail? Consider retry policy
+                }
+            }
         }
     }
 }
