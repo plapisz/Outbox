@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using Outbox.Samples.Api.Domain;
+using Outbox.Samples.Api.Entities;
 using Outbox.Samples.Api.Repositories;
 using Outbox.Samples.Api.Time;
 

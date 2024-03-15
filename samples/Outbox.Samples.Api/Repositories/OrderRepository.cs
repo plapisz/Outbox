@@ -1,4 +1,4 @@
-﻿using Outbox.Samples.Api.Domain;
+﻿using Outbox.Samples.Api.Entities;
 
 namespace Outbox.Samples.Api.Repositories;
 

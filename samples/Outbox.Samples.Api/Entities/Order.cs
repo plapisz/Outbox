@@ -1,7 +1,7 @@
 ﻿using Outbox.Samples.Api.Events;
 using Outbox.Types;
 
-namespace Outbox.Samples.Api.Domain;
+namespace Outbox.Samples.Api.Entities;
 
 public sealed class Order : OutboxEventSource
 {
