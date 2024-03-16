@@ -5,8 +5,8 @@ Outbox is simple library to support Outbox pattern in your system.
 ## Table of contents
 * [Introduction](#Introduction)
 * [Quick start](#Quick-start)
-* [Retry policies](#Retry-policies)
 * [Persistence](#Persistence)
+* [Retry policies](#Retry-policies)
 * [Sources](#Sources)
 
 ## Introduction
@@ -35,11 +35,40 @@ Then, using marker interface **IOutboxEvent**, we can mark event that we want to
 public sealed record OrderCreated(Guid OrderId, string OrderNumber, DateTime OrderCreationDate, string CustomerEmail) : IOutboxEvent;
 ```
 
-## Retry policies
+Entity to be able to generating event processing via outbox it should inherit from base class **OutboxEventSource**. Class OutboxEventSource provides method **AddOutboxEvent** which add event to list which be processing via outbox
 
-TODO
+```
+public sealed class Order : OutboxEventSource
+{
+    public Guid Id { get; }
+    public string Number { get; private set; }
+    public DateTime CreatedAt { get; private set; }
+    public string CustomerEmail { get; private set; }
 
-### Poison queue
+    public Order(Guid id, string number, DateTime createdAt, string customerEmail)
+    {
+        Id = id;
+        Number = number;
+        CreatedAt = createdAt;
+        CustomerEmail = customerEmail;
+
+        AddOutboxEvent(new OrderCreated(Id, Number, CreatedAt, CustomerEmail));
+    }
+}
+```
+
+Events processing occurs after calling **DispatchOutboxEvents** method from base class OutboxEventSource
+
+```
+public async Task Handle(CreateOrder command, CancellationToken cancellationToken)
+{
+    var order = new Order(command.Id, command.Number, _clock.CurrentDate(), command.CustomerEmail);
+
+    await _orderRepository.AddAsync(order);
+
+    order.DispatchOutboxEvents();
+}
+```
 
 ## Persistence
 
@@ -50,6 +79,12 @@ TODO
 ### MongoDB
 
 ### Redis
+
+## Retry policies
+
+TODO
+
+### Poison queue
 
 ## Sources
 
