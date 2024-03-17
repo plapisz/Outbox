@@ -70,6 +70,38 @@ public async Task Handle(CreateOrder command, CancellationToken cancellationToke
 }
 ```
 
+Handler which will be able to processing outbox event should implement generic interface **IOutboxEventHandler<TEvent>**
+
+```
+internal sealed class OrderCreatedHandler : IOutboxEventHandler<OrderCreated>
+{
+    private readonly IMailSender _mailSender;
+
+    public OrderCreatedHandler(IMailSender mailSender)
+    {
+        _mailSender = mailSender;
+    }
+
+    public async Task HandleAsync(OrderCreated @event)
+    {
+        var receiver = @event.CustomerEmail;
+        var subject = $"Order {@event.OrderNumber} created.";
+        var body = $"Dear {@event.CustomerEmail}\nYour order no. {@event.OrderNumber} was created at {@event.OrderCreationDate}";
+
+        await _mailSender.SendAsync(receiver, subject, body);
+    }
+}
+```
+
+Registration of event handler is possible using **method AddOutboxEventHandler**
+
+```
+builder.Services
+    .AddOutbox()
+    .AddOutboxEventHandler<OrderCreated, OrderCreatedHandler>()
+    .AddControllers();
+```
+
 ## Persistence
 
 TODO
