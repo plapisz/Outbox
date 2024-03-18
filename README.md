@@ -93,7 +93,7 @@ internal sealed class OrderCreatedHandler : IOutboxEventHandler<OrderCreated>
 }
 ```
 
-Registration of event handler is possible using **method AddOutboxEventHandler**
+Registration of event handler is possible using method **AddOutboxEventHandler**
 
 ```
 builder.Services

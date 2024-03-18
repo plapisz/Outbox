@@ -8,7 +8,7 @@ public abstract class OutboxEventSource
 
     internal delegate Task OutboxEventsDispatchedEventHandler(OutboxEventSource sender);
 
-    internal static event OutboxEventsDispatchedEventHandler? OutboxEventsDispatched;
+    internal static event OutboxEventsDispatchedEventHandler OutboxEventsDispatched;
 
     public IReadOnlyCollection<IOutboxEvent> OutboxEvents => _outboxEvents.ToList();
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Outbox.Entities;
+﻿using Outbox.Entities;
 using Outbox.Repositories;
 using Outbox.Serializers;
 using Outbox.Time;
