@@ -3,7 +3,6 @@ using Outbox.Events;
 using Outbox.Events.Handlers;
 using Outbox.Repositories;
 using Outbox.Serializers;
-using System.Reflection;
 
 namespace Outbox.Processors;
 
