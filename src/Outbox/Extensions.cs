@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Outbox.Configuration;
 using Outbox.Dispatchers;
 using Outbox.Events;
 using Outbox.Events.Handlers;
@@ -13,14 +14,20 @@ namespace Outbox;
 
 public static class Extensions
 {
-    public static IServiceCollection AddOutbox(this IServiceCollection services)
+    public static IServiceCollection AddOutbox(this IServiceCollection services, Action<IOutboxConfigurator> configurator = default)
     {
         services.AddSingleton<IOutboxEventDispatcher, OutboxEventDispatcher>();
         services.AddSingleton<IOutboxMessageProcessor, OutboxMessageProcessor>();
         services.AddSingleton<IClock, Clock>();
         services.AddSingleton<IOutboxEventSerializer, JsonOutboxEventSerializer>();
-        services.AddSingleton<IOutboxMessageRepository, TemporaryInMemoryOutboxMessageRepository>();
         services.AddHostedService<OutboxMessageService>();
+
+        var outboxConfigurator = new OutboxConfigurator(services);
+        if (configurator == default)
+        {
+            outboxConfigurator.Register<InMemoryOutboxMessageRepository>();
+        }
+        configurator?.Invoke(outboxConfigurator);
 
         using var serviceProvider = services.BuildServiceProvider();
         var outboxEventDispatcher = serviceProvider.GetRequiredService<IOutboxEventDispatcher>();

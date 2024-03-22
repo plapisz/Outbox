@@ -21,7 +21,7 @@ public class ExtensionsTests
     [InlineData(typeof(IOutboxMessageProcessor), typeof(OutboxMessageProcessor))]
     [InlineData(typeof(IClock), typeof(Clock))]
     [InlineData(typeof(IOutboxEventSerializer), typeof(JsonOutboxEventSerializer))]
-    [InlineData(typeof(IOutboxMessageRepository), typeof(TemporaryInMemoryOutboxMessageRepository))]
+    [InlineData(typeof(IOutboxMessageRepository), typeof(InMemoryOutboxMessageRepository))]
     [InlineData(typeof(IHostedService), typeof(OutboxMessageService))]
     public void add_outbox_should_add_all_necessary_services(Type serviceType, Type implementationType)
     {

@@ -2,7 +2,7 @@
 
 namespace Outbox.Repositories;
 
-internal sealed class TemporaryInMemoryOutboxMessageRepository : IOutboxMessageRepository
+internal sealed class InMemoryOutboxMessageRepository : IOutboxMessageRepository
 {
     private static readonly List<OutboxMessage> _outboxMessages = [];
 
