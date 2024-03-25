@@ -7,11 +7,11 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\src\Outbox\Outbox.csproj" />
+		<PackageReference Include="MediatR" Version="12.2.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MediatR" Version="12.2.0" />
+	  <ProjectReference Include="..\..\src\Outbox.PostgreSql\Outbox.PostgreSql.csproj" />
 	</ItemGroup>
 
 </Project>
