@@ -1,16 +1,15 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Hosting;
 using Outbox.Processors;
 
 namespace Outbox.Services;
 
 internal sealed class OutboxMessageService : BackgroundService
 {
-    private IServiceProvider _serviceProvider;
+    private IOutboxMessageProcessor _outboxMessageProcessor;
 
-    public OutboxMessageService(IServiceProvider serviceProvider)
+    public OutboxMessageService(IOutboxMessageProcessor outboxMessageProcessor)
     {
-        _serviceProvider = serviceProvider;
+        _outboxMessageProcessor = outboxMessageProcessor;
     }
 
     protected async override Task ExecuteAsync(CancellationToken stoppingToken)
@@ -19,11 +18,7 @@ internal sealed class OutboxMessageService : BackgroundService
         using var timer = new PeriodicTimer(TimeSpan.FromMinutes(1));
         while (await timer.WaitForNextTickAsync(stoppingToken))
         {
-            using (var scope = _serviceProvider.CreateScope())
-            {
-                var outboxMessageProcessor = _serviceProvider.GetRequiredService<IOutboxMessageProcessor>();
-                await outboxMessageProcessor.ProcessAsync();
-            }            
+            await _outboxMessageProcessor.ProcessAsync();
         }
     }
 }

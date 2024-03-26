@@ -13,5 +13,10 @@ public static class Extensions
     {
         configurator.Services.AddDbContext<OutboxDbContext>(options => options.UseNpgsql(connectionString));
         configurator.Services.AddScoped<IOutboxMessageRepository, PostgreSqlOutboxMessageRepository>();
+
+        using var serviceProvider = configurator.Services.BuildServiceProvider();
+        using var scope = serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<OutboxDbContext>();
+        dbContext.Database.Migrate();
     }
 }

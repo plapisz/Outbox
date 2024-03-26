@@ -18,7 +18,7 @@ public static class Extensions
     {
         // TODO: Check services lifetime scope
         services.AddScoped<IOutboxEventDispatcher, OutboxEventDispatcher>();
-        services.AddScoped<IOutboxMessageProcessor, OutboxMessageProcessor>();
+        services.AddSingleton<IOutboxMessageProcessor, OutboxMessageProcessor>();
         services.AddSingleton<IClock, Clock>();
         services.AddSingleton<IOutboxEventSerializer, JsonOutboxEventSerializer>();
         services.AddHostedService<OutboxMessageService>();

@@ -8,20 +8,20 @@ namespace Outbox.Processors;
 
 internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
 {
-    private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IOutboxEventSerializer _outboxEventSerializer;
     private readonly IServiceProvider _serviceProvider;
 
-    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider)
+    public OutboxMessageProcessor(IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider)
     {
-        _outboxMessageRepository = outboxMessageRepository;
         _outboxEventSerializer = outboxEventSerializer;
         _serviceProvider = serviceProvider;
     }
 
     public async Task ProcessAsync()
     {
-        var messages = await _outboxMessageRepository.GetAllAsync();
+        using var scope = _serviceProvider.CreateScope();
+        var outboxMessageRepository = scope.ServiceProvider.GetRequiredService<IOutboxMessageRepository>();
+        var messages = await outboxMessageRepository.GetAllAsync();
         if (!messages.Any())
         {
             return;
@@ -34,23 +34,20 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
                 .SingleOrDefault(x => x.FullName == message.Type);
             var @event = (IOutboxEvent)_outboxEventSerializer.Deserialize(message.Data, type);
 
-            using var scope = _serviceProvider.CreateScope();
+            var handlerType = typeof(IOutboxEventHandler<>).MakeGenericType(@event.GetType());
+            var handler = scope.ServiceProvider.GetRequiredService(handlerType);
+
+            try
             {
-                var handlerType = typeof(IOutboxEventHandler<>).MakeGenericType(@event.GetType());
-                var handler = scope.ServiceProvider.GetRequiredService(handlerType);
+                await (Task)handlerType
+                    .GetMethod(nameof(IOutboxEventHandler<IOutboxEvent>.HandleAsync))
+                    ?.Invoke(handler, new[] { @event });
 
-                try
-                {
-                    await (Task)handlerType
-                        .GetMethod(nameof(IOutboxEventHandler<IOutboxEvent>.HandleAsync))
-                        ?.Invoke(handler, new[] { @event });
-
-                    await _outboxMessageRepository.DeleteAsync(message);
-                }
-                catch (Exception ex)
-                {
-                    // TODO: What when fail? Consider retry policy
-                }
+                await outboxMessageRepository.DeleteAsync(message);
+            }
+            catch (Exception ex)
+            {
+                // TODO: What when fail? Consider retry policy
             }
         }
     }
