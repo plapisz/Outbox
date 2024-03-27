@@ -14,12 +14,13 @@ internal sealed class ConfirmOrderHandler : IRequestHandler<ConfirmOrder>
         _orderRepository = orderRepository;
         _clock = clock;
     }
+
     public async Task Handle(ConfirmOrder command, CancellationToken cancellationToken)
     {
         var order = await _orderRepository.GetAsync(command.Id);
 
         order.Confirm(_clock.CurrentDate());
 
-        order.DispatchOutboxEvents();
+        await order.DispatchOutboxEvents();
     }
 }

@@ -17,7 +17,7 @@ public static class Extensions
     public static IServiceCollection AddOutbox(this IServiceCollection services, Action<IOutboxConfigurator> configurator = default)
     {
         // TODO: Check services lifetime scope
-        services.AddScoped<IOutboxEventDispatcher, OutboxEventDispatcher>();
+        services.AddSingleton<IOutboxEventDispatcher, OutboxEventDispatcher>();
         services.AddSingleton<IOutboxMessageProcessor, OutboxMessageProcessor>();
         services.AddSingleton<IClock, Clock>();
         services.AddSingleton<IOutboxEventSerializer, JsonOutboxEventSerializer>();

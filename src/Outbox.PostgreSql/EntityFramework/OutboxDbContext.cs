@@ -11,9 +11,16 @@ internal sealed class OutboxDbContext : DbContext
     {
     }
 
+    internal OutboxDbContext(string connectionString) : base(GetOptions(connectionString))
+    {
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.HasDefaultSchema(Constants.SchemaNames.Outbox);
         modelBuilder.ApplyConfigurationsFromAssembly(GetType().Assembly);
     }
+
+    private static DbContextOptions GetOptions(string connectionString) 
+        => NpgsqlDbContextOptionsBuilderExtensions.UseNpgsql(new DbContextOptionsBuilder(), connectionString).Options;
 }

@@ -17,9 +17,9 @@ public abstract class OutboxEventSource
         _outboxEvents.Enqueue(outboxEvent);
     }
 
-    public void DispatchOutboxEvents()
+    public async Task DispatchOutboxEvents()
     {
-        OutboxEventsDispatched?.Invoke(this);
+        await OutboxEventsDispatched?.Invoke(this);
         _outboxEvents.Clear();
     }
 }

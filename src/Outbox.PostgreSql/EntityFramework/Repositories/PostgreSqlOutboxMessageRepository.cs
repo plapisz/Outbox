@@ -1,32 +1,37 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Outbox.Entities;
+using Outbox.PostgreSql.Options;
 using Outbox.Repositories;
 
 namespace Outbox.PostgreSql.EntityFramework.Repositories;
 
 internal sealed class PostgreSqlOutboxMessageRepository : IOutboxMessageRepository
 {
-    private readonly OutboxDbContext _dbContext;
+    private readonly PostgreSqlOptions _options;
 
-    public PostgreSqlOutboxMessageRepository(OutboxDbContext dbContext)
+    public PostgreSqlOutboxMessageRepository(PostgreSqlOptions options)
     {
-        _dbContext = dbContext;
+        // DOTO: Solve dependencies hell and inject DbContext directly
+        _options = options;
     }
 
     public async Task AddAsync(OutboxMessage outboxMessage)
     {
-        await _dbContext.OutboxMessages.AddAsync(outboxMessage);
-        await _dbContext.SaveChangesAsync();
+        using var dbContext = new OutboxDbContext(_options.ConnectionString);
+        await dbContext.OutboxMessages.AddAsync(outboxMessage);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task DeleteAsync(OutboxMessage outboxMessage)
     {
-        _dbContext.OutboxMessages.Remove(outboxMessage);
-        await _dbContext.SaveChangesAsync();
+        using var dbContext = new OutboxDbContext(_options.ConnectionString);
+        dbContext.OutboxMessages.Remove(outboxMessage);
+        await dbContext.SaveChangesAsync();
     }
 
     public async Task<IEnumerable<OutboxMessage>> GetAllAsync()
     {
-        return await _dbContext.OutboxMessages.ToListAsync();
+        using var dbContext = new OutboxDbContext(_options.ConnectionString);
+        return await dbContext.OutboxMessages.ToListAsync();
     }
 }

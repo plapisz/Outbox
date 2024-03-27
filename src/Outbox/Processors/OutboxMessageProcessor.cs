@@ -9,24 +9,25 @@ namespace Outbox.Processors;
 internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
 {
     private readonly IOutboxEventSerializer _outboxEventSerializer;
+    private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IServiceProvider _serviceProvider;
 
-    public OutboxMessageProcessor(IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider)
+    public OutboxMessageProcessor(IOutboxEventSerializer outboxEventSerializer, IOutboxMessageRepository outboxMessageRepository, IServiceProvider serviceProvider)
     {
         _outboxEventSerializer = outboxEventSerializer;
+        _outboxMessageRepository = outboxMessageRepository;
         _serviceProvider = serviceProvider;
     }
 
     public async Task ProcessAsync()
     {
-        using var scope = _serviceProvider.CreateScope();
-        var outboxMessageRepository = scope.ServiceProvider.GetRequiredService<IOutboxMessageRepository>();
-        var messages = await outboxMessageRepository.GetAllAsync();
+        var messages = await _outboxMessageRepository.GetAllAsync();
         if (!messages.Any())
         {
             return;
         }
 
+        using var scope = _serviceProvider.CreateScope();
         foreach (var message in messages.ToList())
         {
             var type = AppDomain.CurrentDomain.GetAssemblies()
@@ -43,7 +44,7 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
                     .GetMethod(nameof(IOutboxEventHandler<IOutboxEvent>.HandleAsync))
                     ?.Invoke(handler, new[] { @event });
 
-                await outboxMessageRepository.DeleteAsync(message);
+                await _outboxMessageRepository.DeleteAsync(message);
             }
             catch (Exception ex)
             {

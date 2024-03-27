@@ -1,5 +1,6 @@
 using Outbox;
 using Outbox.PostgreSql;
+using Outbox.PostgreSql.Options;
 using Outbox.Samples.Api.Events;
 using Outbox.Samples.Api.Events.Handlers;
 using Outbox.Samples.Api.Repositories;
@@ -10,7 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration["postgres:connectionString"];
 builder.Services
-    .AddOutbox(cfg => cfg.PostgreSql(connectionString))
+    .AddOutbox(cfg => cfg.PostgreSql(new PostgreSqlOptions() { ConnectionString = connectionString }))
     .AddOutboxEventHandler<OrderCreated, OrderCreatedHandler>()
     .AddOutboxEventHandler<OrderConfirmed, OrderConfirmedHandler>()
     .AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly))

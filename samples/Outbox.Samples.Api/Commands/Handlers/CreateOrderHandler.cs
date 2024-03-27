@@ -22,6 +22,6 @@ internal sealed class CreateOrderHandler : IRequestHandler<CreateOrder>
 
         await _orderRepository.AddAsync(order);
 
-        order.DispatchOutboxEvents();
+        await order.DispatchOutboxEvents();
     }
 }

@@ -3,16 +3,18 @@ using Microsoft.Extensions.DependencyInjection;
 using Outbox.Configuration;
 using Outbox.PostgreSql.EntityFramework;
 using Outbox.PostgreSql.EntityFramework.Repositories;
+using Outbox.PostgreSql.Options;
 using Outbox.Repositories;
 
 namespace Outbox.PostgreSql;
 
 public static class Extensions
 {
-    public static void PostgreSql(this IOutboxConfigurator configurator, string connectionString)
+    public static void PostgreSql(this IOutboxConfigurator configurator, PostgreSqlOptions options)
     {
-        configurator.Services.AddDbContext<OutboxDbContext>(options => options.UseNpgsql(connectionString));
-        configurator.Services.AddScoped<IOutboxMessageRepository, PostgreSqlOutboxMessageRepository>();
+        configurator.Services.AddSingleton(options);
+        configurator.Services.AddDbContext<OutboxDbContext>(builderOptions => builderOptions.UseNpgsql(options.ConnectionString));
+        configurator.Register<PostgreSqlOutboxMessageRepository>();
 
         using var serviceProvider = configurator.Services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
