@@ -31,7 +31,7 @@ public class OutboxEventSourceTests
     }
 
     [Fact]
-    public void dispatch_outbox_events_should_raise_outbox_events_dispatched_event()
+    public async Task dispatch_outbox_events_should_raise_outbox_events_dispatched_event()
     {
         var isEventRaied = false;
         OutboxEventSource.OutboxEventsDispatched += (OutboxEventSource sender) =>
@@ -42,18 +42,18 @@ public class OutboxEventSourceTests
         var order = CreateOrder();
         order.Confirm(DateTime.Now);
 
-        order.DispatchOutboxEvents();
+        await order.DispatchOutboxEvents();
 
         isEventRaied.Should().BeTrue();
     }
 
     [Fact]
-    public void dispatch_outbox_events_should_clear_events()
+    public async Task dispatch_outbox_events_should_clear_events()
     {
         var order = CreateOrder();
         order.Confirm(DateTime.Now);
 
-        order.DispatchOutboxEvents();
+        await order.DispatchOutboxEvents();
         
         order.OutboxEvents.Should().BeEmpty();
     }

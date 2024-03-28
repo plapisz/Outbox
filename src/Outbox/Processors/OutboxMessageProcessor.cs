@@ -8,14 +8,14 @@ namespace Outbox.Processors;
 
 internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
 {
-    private readonly IOutboxEventSerializer _outboxEventSerializer;
     private readonly IOutboxMessageRepository _outboxMessageRepository;
+    private readonly IOutboxEventSerializer _outboxEventSerializer;
     private readonly IServiceProvider _serviceProvider;
 
-    public OutboxMessageProcessor(IOutboxEventSerializer outboxEventSerializer, IOutboxMessageRepository outboxMessageRepository, IServiceProvider serviceProvider)
+    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider)
     {
-        _outboxEventSerializer = outboxEventSerializer;
         _outboxMessageRepository = outboxMessageRepository;
+        _outboxEventSerializer = outboxEventSerializer;
         _serviceProvider = serviceProvider;
     }
 

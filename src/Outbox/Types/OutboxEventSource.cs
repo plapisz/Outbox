@@ -19,7 +19,11 @@ public abstract class OutboxEventSource
 
     public async Task DispatchOutboxEvents()
     {
-        await OutboxEventsDispatched?.Invoke(this);
+        if (OutboxEventsDispatched is not null)
+        {
+            await OutboxEventsDispatched.Invoke(this);
+        }
+        
         _outboxEvents.Clear();
     }
 }
