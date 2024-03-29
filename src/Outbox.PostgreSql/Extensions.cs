@@ -13,7 +13,13 @@ public static class Extensions
     public static void PostgreSql(this IOutboxConfigurator configurator, PostgreSqlOptions options)
     {
         configurator.Services.AddSingleton(options);
-        configurator.Services.AddDbContext<OutboxDbContext>(builderOptions => builderOptions.UseNpgsql(options.ConnectionString));
+        configurator.Services.AddDbContext<OutboxDbContext>(builderOptions =>
+        {
+            builderOptions.UseNpgsql(options.ConnectionString, sqlOptionsBuilder =>
+            {
+                sqlOptionsBuilder.MigrationsHistoryTable(Constants.TableNames.MigrationsHistory, Constants.SchemaNames.Outbox);
+            });
+        });
         configurator.Register<PostgreSqlOutboxMessageRepository>();
 
         using var serviceProvider = configurator.Services.BuildServiceProvider();
