@@ -21,6 +21,6 @@ internal sealed class ConfirmOrderHandler : IRequestHandler<ConfirmOrder>
 
         order.Confirm(_clock.CurrentDate());
 
-        await order.DispatchOutboxEvents();
+        await order.DispatchOutboxEventsAsync();
     }
 }

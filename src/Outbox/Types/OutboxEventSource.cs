@@ -17,7 +17,7 @@ public abstract class OutboxEventSource
         _outboxEvents.Enqueue(outboxEvent);
     }
 
-    public async Task DispatchOutboxEvents()
+    public async Task DispatchOutboxEventsAsync()
     {
         if (OutboxEventsDispatched is not null)
         {

@@ -57,7 +57,7 @@ public sealed class Order : OutboxEventSource
 }
 ```
 
-Events processing occurs after calling **DispatchOutboxEvents** method from base class OutboxEventSource
+Events processing occurs after calling **DispatchOutboxEventsAsync** method from base class OutboxEventSource
 
 ```
 public async Task Handle(CreateOrder command, CancellationToken cancellationToken)
@@ -66,7 +66,7 @@ public async Task Handle(CreateOrder command, CancellationToken cancellationToke
 
     await _orderRepository.AddAsync(order);
 
-    order.DispatchOutboxEvents();
+    await order.DispatchOutboxEventsAsync();
 }
 ```
 
@@ -104,7 +104,7 @@ builder.Services
 
 ## Persistence
 
-TODO
+By default events processed via outbox are stored in memory. That means that when our system crash we lose data. Fortunately Outbox support different types of storages.
 
 ### Postgres
 
