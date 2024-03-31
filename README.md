@@ -106,7 +106,15 @@ builder.Services
 
 By default events processed via outbox are stored in memory. That means that when our system crash we lose data. Fortunately Outbox support different types of storages.
 
-### Postgres
+### PostgreSql
+
+To add PostgreSql storage you need to add reference to **Outbox.PostgreSql**. Then you need to call **PostgreSql** extension method on configuration object in AddOutbox passing **PostgreSqlOptions** with connection string. 
+
+```
+builder.Services
+    .AddOutbox(cfg => cfg.PostgreSql(new PostgreSqlOptions() { ConnectionString = connectionString }))
+    .AddControllers();
+```
 
 ### MongoDB
 
