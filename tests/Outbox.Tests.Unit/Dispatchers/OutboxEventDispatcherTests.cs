@@ -27,7 +27,10 @@ public class OutboxEventDispatcherTests
         await _outboxMessageRepository.Received(1).AddAsync(Arg.Is<OutboxMessage>(x =>
                 x.Type == type && 
                 x.Data == json && 
-                x.CreatedAt == now));
+                x.CreatedAt == now &&
+                x.AttemptsCount == 0 &&
+                x.LastAttemptAt == null &&
+                x.NextAttemptAt == null));
     }
 
     private readonly IClock _clock;

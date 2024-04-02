@@ -6,6 +6,9 @@ public sealed class OutboxMessage
     public string Type { get; private set; }
     public string Data { get; private set; }
     public DateTime CreatedAt { get; private set; }
+    public uint AttemptsCount { get; private set; }
+    public DateTime? LastAttemptAt { get; private set; }
+    public DateTime? NextAttemptAt { get; private set; }
 
     private OutboxMessage()
     {
@@ -18,5 +21,8 @@ public sealed class OutboxMessage
         Type = type;
         Data = data;
         CreatedAt = createdAt;
+        AttemptsCount = 0;
+        LastAttemptAt = null;
+        NextAttemptAt = null;
     }
 }
