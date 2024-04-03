@@ -29,7 +29,7 @@ internal sealed class PostgreSqlOutboxMessageRepository : IOutboxMessageReposito
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<IEnumerable<OutboxMessage>> GetAllAsync()
+    public async Task<IEnumerable<OutboxMessage>> GetAllToProcessAsync()
     {
         using var dbContext = new OutboxDbContext(_options.ConnectionString);
         return await dbContext.OutboxMessages.ToListAsync();

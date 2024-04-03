@@ -25,4 +25,9 @@ public sealed class OutboxMessage
         LastAttemptAt = null;
         NextAttemptAt = null;
     }
+
+    public void IncrementAttempsCount()
+    {
+        AttemptsCount++;
+    }
 }

@@ -17,7 +17,7 @@ public class OutboxMessageProcessorTests
     {
         var message = GetMessage();
         var orderCreated = GetOrderCreatedEvent();
-        _outboxMessageRepository.GetAllAsync().Returns(new List<OutboxMessage> { message });
+        _outboxMessageRepository.GetAllToProcessAsync().Returns(new List<OutboxMessage> { message });
         _outboxEventSerializer.Deserialize(message.Data, typeof(OrderCreated))
             .Returns(orderCreated);
         

@@ -2,6 +2,7 @@
 using Outbox.Events;
 using Outbox.Events.Handlers;
 using Outbox.Repositories;
+using Outbox.RetryPolicy.Options;
 using Outbox.Serializers;
 
 namespace Outbox.Processors;
@@ -11,17 +12,19 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
     private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IOutboxEventSerializer _outboxEventSerializer;
     private readonly IServiceProvider _serviceProvider;
+    private readonly RetryPolicyOptions _retryPolicyOptions;
 
-    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider)
+    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider, RetryPolicyOptions retryPolicyOptions)
     {
         _outboxMessageRepository = outboxMessageRepository;
         _outboxEventSerializer = outboxEventSerializer;
         _serviceProvider = serviceProvider;
+        _retryPolicyOptions = retryPolicyOptions;
     }
 
     public async Task ProcessAsync()
     {
-        var messages = await _outboxMessageRepository.GetAllAsync();
+        var messages = await _outboxMessageRepository.GetAllToProcessAsync();
         if (!messages.Any())
         {
             return;
@@ -48,7 +51,14 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
             }
             catch (Exception ex)
             {
-                // TODO: What when fail? Consider retry policy
+                if (message.AttemptsCount >= _retryPolicyOptions.MaxRetryCount)
+                {
+                    // Create remove policy depending on _retryPolicyOptions.UsePoisonQueue flag
+                }
+
+                message.IncrementAttempsCount();
+                // Create policy to set  NextRetryAttempts depending on NextRetryAttemptsMode
+                await _outboxMessageRepository.UpdateAsync(message);
             }
         }
     }
