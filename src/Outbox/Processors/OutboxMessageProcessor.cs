@@ -3,6 +3,7 @@ using Outbox.Events;
 using Outbox.Events.Handlers;
 using Outbox.Repositories;
 using Outbox.RetryPolicy.Options;
+using Outbox.RetryPolicy.RemoveMessageStrategies.Resolvers;
 using Outbox.Serializers;
 
 namespace Outbox.Processors;
@@ -11,13 +12,19 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
 {
     private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IOutboxEventSerializer _outboxEventSerializer;
+    private readonly IRemoveOutboxMessageStrategyResolver _removeOutboxMessageStrategyResolver;
     private readonly IServiceProvider _serviceProvider;
     private readonly RetryPolicyOptions _retryPolicyOptions;
 
-    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, IOutboxEventSerializer outboxEventSerializer, IServiceProvider serviceProvider, RetryPolicyOptions retryPolicyOptions)
+    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, 
+        IOutboxEventSerializer outboxEventSerializer,
+        IRemoveOutboxMessageStrategyResolver removeOutboxMessageStrategyResolver,
+        IServiceProvider serviceProvider, 
+        RetryPolicyOptions retryPolicyOptions)
     {
         _outboxMessageRepository = outboxMessageRepository;
         _outboxEventSerializer = outboxEventSerializer;
+        _removeOutboxMessageStrategyResolver = removeOutboxMessageStrategyResolver;
         _serviceProvider = serviceProvider;
         _retryPolicyOptions = retryPolicyOptions;
     }
@@ -53,7 +60,8 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
             {
                 if (message.AttemptsCount >= _retryPolicyOptions.MaxRetryCount)
                 {
-                    // Create remove policy depending on _retryPolicyOptions.UsePoisonQueue flag
+                    var removeOutboxMessageStrategy = _removeOutboxMessageStrategyResolver.Resolve(_retryPolicyOptions.UsePoisonQueue);
+                    await removeOutboxMessageStrategy.RemoveMessageAsync(message);
                 }
 
                 message.IncrementAttempsCount();
