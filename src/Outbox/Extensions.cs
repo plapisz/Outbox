@@ -5,10 +5,14 @@ using Outbox.Events;
 using Outbox.Events.Handlers;
 using Outbox.Processors;
 using Outbox.Repositories;
+using Outbox.RetryPolicy.RemoveMessageStrategies.Resolvers;
+using Outbox.RetryPolicy.RemoveMessageStrategies;
 using Outbox.Serializers;
 using Outbox.Services;
 using Outbox.Time;
 using Outbox.Types;
+using Outbox.RetryPolicy.NextRetryAttemptsStrategies;
+using Outbox.RetryPolicy.NextRetryAttemptsStrategies.Resolvers;
 
 namespace Outbox;
 
@@ -22,6 +26,15 @@ public static class Extensions
         services.AddSingleton<IClock, Clock>();
         services.AddSingleton<IOutboxEventSerializer, JsonOutboxEventSerializer>();
         services.AddHostedService<OutboxMessageService>();
+
+        services.AddSingleton<IRemoveOutboxMessageStrategy, RemoveOutboxMessageDirectlyStrategy>();
+        services.AddSingleton<IRemoveOutboxMessageStrategy, MoveOutboxMessageToPoisonQueueStrategy>();
+        services.AddSingleton<IRemoveOutboxMessageStrategyResolver, RemoveOutboxMessageStrategyResolver>();
+        services.AddSingleton<INextRetryAttemptsStrategy, NotSetNextRetryAttemptsStrategy>();
+        services.AddSingleton<INextRetryAttemptsStrategy, RegularNextRetryAttemptsStrategy>();
+        services.AddSingleton<INextRetryAttemptsStrategy, ExponentialNextRetryAttemptsStrategy>();
+        services.AddSingleton<INextRetryAttemptsStrategyResolver, NextRetryAttemptsStrategyResolver>();
+
 
         var outboxConfigurator = new OutboxConfigurator(services);
         if (configurator == default)

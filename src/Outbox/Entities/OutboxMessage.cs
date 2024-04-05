@@ -30,4 +30,14 @@ public sealed class OutboxMessage
     {
         AttemptsCount++;
     }
+
+    public void SetLastAttemptAt(DateTime lastAttemptAt)
+    {
+        LastAttemptAt = lastAttemptAt;
+    }
+
+    public void SetNextAttemptAt(DateTime? nextAttemptAt)
+    {
+        NextAttemptAt = nextAttemptAt;
+    }
 }

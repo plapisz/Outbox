@@ -2,9 +2,11 @@
 using Outbox.Events;
 using Outbox.Events.Handlers;
 using Outbox.Repositories;
+using Outbox.RetryPolicy.NextRetryAttemptsStrategies.Resolvers;
 using Outbox.RetryPolicy.Options;
 using Outbox.RetryPolicy.RemoveMessageStrategies.Resolvers;
 using Outbox.Serializers;
+using Outbox.Time;
 
 namespace Outbox.Processors;
 
@@ -13,18 +15,24 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
     private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IOutboxEventSerializer _outboxEventSerializer;
     private readonly IRemoveOutboxMessageStrategyResolver _removeOutboxMessageStrategyResolver;
+    private readonly INextRetryAttemptsStrategyResolver _nextRetryAttemptsStrategyResolver;
+    private readonly IClock _clock;
     private readonly IServiceProvider _serviceProvider;
     private readonly RetryPolicyOptions _retryPolicyOptions;
 
-    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository, 
+    public OutboxMessageProcessor(IOutboxMessageRepository outboxMessageRepository,
         IOutboxEventSerializer outboxEventSerializer,
         IRemoveOutboxMessageStrategyResolver removeOutboxMessageStrategyResolver,
-        IServiceProvider serviceProvider, 
+        INextRetryAttemptsStrategyResolver nextRetryAttemptsStrategyResolver,
+        IClock clock,
+        IServiceProvider serviceProvider,
         RetryPolicyOptions retryPolicyOptions)
     {
         _outboxMessageRepository = outboxMessageRepository;
         _outboxEventSerializer = outboxEventSerializer;
         _removeOutboxMessageStrategyResolver = removeOutboxMessageStrategyResolver;
+        _nextRetryAttemptsStrategyResolver = nextRetryAttemptsStrategyResolver;
+        _clock = clock;
         _serviceProvider = serviceProvider;
         _retryPolicyOptions = retryPolicyOptions;
     }
@@ -64,8 +72,12 @@ internal sealed class OutboxMessageProcessor : IOutboxMessageProcessor
                     await removeOutboxMessageStrategy.RemoveMessageAsync(message);
                 }
 
+                var now = _clock.CurrentDate();
+                var nextRetryAttemptsStrategy = _nextRetryAttemptsStrategyResolver.Resolve(_retryPolicyOptions.NextRetryAttemptsMode);
+                message.SetNextAttemptAt(nextRetryAttemptsStrategy.GetNextAttemptAt(message.LastAttemptAt, message.AttemptsCount));
+                message.SetLastAttemptAt(now);
                 message.IncrementAttempsCount();
-                // Create policy to set  NextRetryAttempts depending on NextRetryAttemptsMode
+
                 await _outboxMessageRepository.UpdateAsync(message);
             }
         }
