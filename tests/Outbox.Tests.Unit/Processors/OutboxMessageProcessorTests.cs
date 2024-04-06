@@ -4,8 +4,12 @@ using Outbox.Entities;
 using Outbox.Events.Handlers;
 using Outbox.Processors;
 using Outbox.Repositories;
+using Outbox.RetryPolicy.NextRetryAttemptsStrategies.Resolvers;
+using Outbox.RetryPolicy.Options;
+using Outbox.RetryPolicy.RemoveMessageStrategies.Resolvers;
 using Outbox.Serializers;
 using Outbox.Tests.Unit.Shared.Events;
+using Outbox.Time;
 using Xunit;
 
 namespace Outbox.Tests.Unit.Processors;
@@ -33,6 +37,9 @@ public class OutboxMessageProcessorTests
 
     private readonly IOutboxMessageRepository _outboxMessageRepository;
     private readonly IOutboxEventSerializer _outboxEventSerializer;
+    private readonly IRemoveOutboxMessageStrategyResolver _removeOutboxMessageStrategyResolver;
+    private readonly INextRetryAttemptsStrategyResolver _nextRetryAttemptsStrategyResolver;
+    private readonly IClock _clock;
     private readonly IOutboxEventHandler<OrderCreated> _handler;
     private readonly OutboxMessageProcessor _outboxMessageProcessor;
 
@@ -40,11 +47,20 @@ public class OutboxMessageProcessorTests
     {
         _outboxMessageRepository = Substitute.For<IOutboxMessageRepository>();
         _outboxEventSerializer = Substitute.For<IOutboxEventSerializer>();
+        _removeOutboxMessageStrategyResolver = Substitute.For<IRemoveOutboxMessageStrategyResolver>();
+        _nextRetryAttemptsStrategyResolver = Substitute.For<INextRetryAttemptsStrategyResolver>();
+        _clock = Substitute.For<IClock>();
         _handler = Substitute.For<IOutboxEventHandler<OrderCreated>>();
         var services = new ServiceCollection();
         services.AddSingleton((_) => _handler);
         var serviceProvider = services.BuildServiceProvider();
-        _outboxMessageProcessor = new OutboxMessageProcessor(_outboxMessageRepository, _outboxEventSerializer, serviceProvider);
+        _outboxMessageProcessor = new OutboxMessageProcessor(_outboxMessageRepository, 
+            _outboxEventSerializer,
+            _removeOutboxMessageStrategyResolver,
+            _nextRetryAttemptsStrategyResolver,
+            _clock,
+            serviceProvider,
+            new RetryPolicyOptions());
     }
 
     private static OutboxMessage GetMessage()
