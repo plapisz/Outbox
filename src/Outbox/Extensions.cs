@@ -13,6 +13,7 @@ using Outbox.Time;
 using Outbox.Types;
 using Outbox.RetryPolicy.NextRetryAttemptsStrategies;
 using Outbox.RetryPolicy.NextRetryAttemptsStrategies.Resolvers;
+using Outbox.RetryPolicy.Options;
 
 namespace Outbox;
 
@@ -40,6 +41,12 @@ public static class Extensions
         if (configurator == default)
         {
             outboxConfigurator.Register<InMemoryOutboxMessageRepository>();
+            services.AddSingleton(new RetryPolicyOptions
+            {
+                MaxRetryCount = 0,
+                NextRetryAttemptsMode = NextRetryAttemptsModeOptions.NotSet,
+                UsePoisonQueue = false,
+            });
         }
         configurator?.Invoke(outboxConfigurator);
 
