@@ -6,8 +6,5 @@ internal sealed class NotSetNextRetryAttemptsStrategy : INextRetryAttemptsStrate
 {
     public NextRetryAttemptsModeOptions NextRetryAttemptsMode => NextRetryAttemptsModeOptions.NotSet;
 
-    public DateTime? GetNextAttemptAt(DateTime? lastAttemptAt, uint attemptsCount)
-    {
-        throw new NotImplementedException();
-    }
+    public DateTime? GetNextAttemptAt(DateTime? lastAttemptAt, uint attemptsCount) => null;
 }
