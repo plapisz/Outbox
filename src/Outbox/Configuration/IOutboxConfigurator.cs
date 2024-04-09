@@ -7,5 +7,6 @@ public interface IOutboxConfigurator
 {
     IServiceCollection Services { get; }
 
-    public IOutboxConfigurator Register<T>() where T : class, IOutboxMessageRepository;
+    IOutboxConfigurator RegisterOutboxMessageRepository<T>() where T : class, IOutboxMessageRepository;
+    IOutboxConfigurator RegisterPoisonQueueItemRepository<T>() where T : class, IPoisonQueueItemRepository;
 }

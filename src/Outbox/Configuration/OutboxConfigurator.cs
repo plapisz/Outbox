@@ -12,9 +12,16 @@ internal sealed class OutboxConfigurator : IOutboxConfigurator
         Services = services;
     }
 
-    public IOutboxConfigurator Register<T>() where T : class, IOutboxMessageRepository
+    public IOutboxConfigurator RegisterOutboxMessageRepository<T>() where T : class, IOutboxMessageRepository
     {
         Services.AddSingleton<IOutboxMessageRepository, T>();
+
+        return this;
+    }
+
+    public IOutboxConfigurator RegisterPoisonQueueItemRepository<T>() where T : class, IPoisonQueueItemRepository
+    {
+        Services.AddSingleton<IPoisonQueueItemRepository, T>();
 
         return this;
     }

@@ -20,7 +20,7 @@ public static class Extensions
                 sqlOptionsBuilder.MigrationsHistoryTable(Constants.TableNames.MigrationsHistory, Constants.SchemaNames.Outbox);
             });
         });
-        configurator.Register<PostgreSqlOutboxMessageRepository>();
+        configurator.RegisterOutboxMessageRepository<PostgreSqlOutboxMessageRepository>();
 
         using var serviceProvider = configurator.Services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();

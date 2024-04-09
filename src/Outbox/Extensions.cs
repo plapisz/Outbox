@@ -36,11 +36,11 @@ public static class Extensions
         services.AddSingleton<INextRetryAttemptsStrategy, ExponentialNextRetryAttemptsStrategy>();
         services.AddSingleton<INextRetryAttemptsStrategyResolver, NextRetryAttemptsStrategyResolver>();
 
-
         var outboxConfigurator = new OutboxConfigurator(services);
         if (configurator == default)
         {
-            outboxConfigurator.Register<InMemoryOutboxMessageRepository>();
+            outboxConfigurator.RegisterOutboxMessageRepository<InMemoryOutboxMessageRepository>();
+            outboxConfigurator.RegisterPoisonQueueItemRepository<InMememoryPoisonQueueItemRepository>();
             services.AddSingleton(new RetryPolicyOptions
             {
                 MaxRetryCount = 0,
