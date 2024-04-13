@@ -18,6 +18,6 @@ internal sealed class ExponentialNextRetryAttemptsStrategy : INextRetryAttemptsS
     {
         lastAttemptAt ??= _clock.CurrentDate();
 
-        return lastAttemptAt.Value.AddMinutes(attemptsCount * 2);
+        return lastAttemptAt.Value.AddMinutes(Math.Pow(2, attemptsCount));
     }
 }
