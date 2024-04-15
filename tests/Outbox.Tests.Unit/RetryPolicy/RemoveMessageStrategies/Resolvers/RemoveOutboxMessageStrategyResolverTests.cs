@@ -1,7 +1,4 @@
 ﻿using NSubstitute;
-using Outbox.RetryPolicy.NextRetryAttemptsStrategies.Resolvers;
-using Outbox.RetryPolicy.NextRetryAttemptsStrategies;
-using Outbox.RetryPolicy.Options;
 using Xunit;
 using Outbox.RetryPolicy.RemoveMessageStrategies;
 using Outbox.Time;
