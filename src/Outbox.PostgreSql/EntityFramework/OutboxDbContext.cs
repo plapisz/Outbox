@@ -6,6 +6,7 @@ namespace Outbox.PostgreSql.EntityFramework;
 internal sealed class OutboxDbContext : DbContext
 {
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
+    public DbSet<PoisonQueueItem> PoisonQueueItems { get; set; }
 
     public OutboxDbContext(DbContextOptions<OutboxDbContext> options) : base(options)
     {

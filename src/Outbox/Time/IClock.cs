@@ -1,6 +1,6 @@
 ﻿namespace Outbox.Time;
 
-internal interface IClock
+public interface IClock
 {
     DateTime CurrentDate();
 }

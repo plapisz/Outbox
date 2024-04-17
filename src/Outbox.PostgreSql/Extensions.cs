@@ -21,6 +21,7 @@ public static class Extensions
             });
         });
         configurator.RegisterOutboxMessageRepository<PostgreSqlOutboxMessageRepository>();
+        configurator.RegisterPoisonQueueItemRepository<PostgreSqlPoisonQueueItemRepository>();
 
         using var serviceProvider = configurator.Services.BuildServiceProvider();
         using var scope = serviceProvider.CreateScope();
