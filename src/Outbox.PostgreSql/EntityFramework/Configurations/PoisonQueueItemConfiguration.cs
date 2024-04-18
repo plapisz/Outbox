@@ -4,17 +4,16 @@ using Outbox.Entities;
 
 namespace Outbox.PostgreSql.EntityFramework.Configurations;
 
-internal sealed class OutboxMessageConfiguration : IEntityTypeConfiguration<OutboxMessage>
+internal sealed class PoisonQueueItemConfiguration : IEntityTypeConfiguration<PoisonQueueItem>
 {
-    public void Configure(EntityTypeBuilder<OutboxMessage> builder)
+    public void Configure(EntityTypeBuilder<PoisonQueueItem> builder)
     {
         builder.HasKey(x => x.Id);
 
         builder.Property(x => x.Type).HasMaxLength(256).IsRequired();
         builder.Property(x => x.Data).IsRequired();
         builder.Property(x => x.CreatedAt).IsRequired();
-        builder.Property(x => x.AttemptsCount).IsRequired();
 
-        builder.ToTable(nameof(OutboxMessage), Constants.SchemaNames.Outbox);
+        builder.ToTable(nameof(PoisonQueueItem), Constants.SchemaNames.Outbox);
     }
 }

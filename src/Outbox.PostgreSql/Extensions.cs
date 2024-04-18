@@ -4,7 +4,6 @@ using Outbox.Configuration;
 using Outbox.PostgreSql.EntityFramework;
 using Outbox.PostgreSql.EntityFramework.Repositories;
 using Outbox.PostgreSql.Options;
-using Outbox.Repositories;
 
 namespace Outbox.PostgreSql;
 

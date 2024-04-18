@@ -13,4 +13,8 @@
 		<ProjectReference Include="..\Outbox\Outbox.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="EntityFramework\Migrations\" />
+	</ItemGroup>
+
 </Project>

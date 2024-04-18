@@ -12,7 +12,7 @@ using Outbox.PostgreSql.EntityFramework;
 namespace Outbox.PostgreSql.EntityFramework.Migrations
 {
     [DbContext(typeof(OutboxDbContext))]
-    [Migration("20240325090742_InitialCreate")]
+    [Migration("20240418180759_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -32,6 +32,38 @@ namespace Outbox.PostgreSql.EntityFramework.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<long>("AttemptsCount")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Data")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("LastAttemptAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime?>("NextAttemptAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("OutboxMessage", "outbox");
+                });
+
+            modelBuilder.Entity("Outbox.Entities.PoisonQueueItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -46,7 +78,7 @@ namespace Outbox.PostgreSql.EntityFramework.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OutboxMessage", "outbox");
+                    b.ToTable("PoisonQueueItem", "outbox");
                 });
 #pragma warning restore 612, 618
         }
