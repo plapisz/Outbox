@@ -14,7 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration["postgres:connectionString"];
 builder.Services
     .AddOutbox(cfg => cfg
-        .WithRetryPolicy(new RetryPolicyOptions())
+        .WithRetryPolicy(new RetryPolicyOptions(10, NextRetryAttemptsModeOptions.Exponential, true))
         .PostgreSql(new PostgreSqlOptions() { ConnectionString = connectionString }))
     .AddOutboxEventHandler<OrderCreated, OrderCreatedHandler>()
     .AddOutboxEventHandler<OrderConfirmed, OrderConfirmedHandler>()

@@ -1,11 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Outbox.Repositories;
+using Outbox.RetryPolicy.Options;
 
 namespace Outbox.Configuration;
 
 internal sealed class OutboxConfigurator : IOutboxConfigurator
 {
     public IServiceCollection Services { get; }
+    public RetryPolicyOptions RetryPolicyOptions { get; set; }
 
     public OutboxConfigurator(IServiceCollection services)
     {

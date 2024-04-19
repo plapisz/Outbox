@@ -8,7 +8,7 @@ public static class Extensions
 {
     public static IOutboxConfigurator WithRetryPolicy(this IOutboxConfigurator configurator, RetryPolicyOptions options)
     {
-        configurator.Services.AddSingleton(options);
+        configurator.RetryPolicyOptions = options;
 
         return configurator;
     }

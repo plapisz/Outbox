@@ -41,14 +41,10 @@ public static class Extensions
         {
             outboxConfigurator.RegisterOutboxMessageRepository<InMemoryOutboxMessageRepository>();
             outboxConfigurator.RegisterPoisonQueueItemRepository<InMememoryPoisonQueueItemRepository>();
-            services.AddSingleton(new RetryPolicyOptions
-            {
-                MaxRetryCount = 0,
-                NextRetryAttemptsMode = NextRetryAttemptsModeOptions.NotSet,
-                UsePoisonQueue = false,
-            });
+            services.AddSingleton(new RetryPolicyOptions());
         }
         configurator?.Invoke(outboxConfigurator);
+        services.AddSingleton(outboxConfigurator.RetryPolicyOptions ?? new RetryPolicyOptions());
 
         using var serviceProvider = services.BuildServiceProvider();
         var outboxEventDispatcher = serviceProvider.GetRequiredService<IOutboxEventDispatcher>();
