@@ -5,8 +5,8 @@ Outbox is simple library to support Outbox pattern in your system.
 ## Table of contents
 * [Introduction](#Introduction)
 * [Quick start](#Quick-start)
-* [Persistence](#Persistence)
 * [Retry policies](#Retry-policies)
+* [Persistence](#Persistence)
 * [Sources](#Sources)
 
 ## Introduction
@@ -102,6 +102,22 @@ builder.Services
     .AddControllers();
 ```
 
+## Retry policies
+
+By default messages are removed after both success and failed processing. In second case we can define retry policy of messages processing.
+To add retry policy you need to call method **WithRetryPolicy** on configuration object passing instance of **RetryPolicyOptions**.
+
+
+```
+builder.Services
+    .AddOutbox(cfg => cfg.WithRetryPolicy(new RetryPolicyOptions(10, NextRetryAttemptsModeOptions.Exponential, true)))
+    .AddControllers();
+```
+
+
+### Options of retry policy
+
+
 ## Persistence
 
 By default events processed via outbox are stored in memory. That means that when our system crash we lose data. Fortunately Outbox support different types of storages.
@@ -119,12 +135,6 @@ builder.Services
 ### MongoDB
 
 ### Redis
-
-## Retry policies
-
-TODO
-
-### Poison queue
 
 ## Sources
 
