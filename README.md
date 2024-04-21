@@ -117,6 +117,13 @@ builder.Services
 
 ### Options of retry policy
 
+To instance of **RetryPolicyOptions** you need to pass three parameters:
+* maxRetryCount - integer number of maximum count of retry attemps
+* nextRetryAttemptsMode - enumeration accepting one of three values
+    * NotSet - next retry attemps will be placed as soon as possible
+    * Regular - next retry attemps will be placed after one minute,
+    * Exponential = next retry attemps will be placed in exponential way, after 1, 2, 4, 8, 16, 32 and so on
+* UsePoisonQueue - boolean value, if set to false message is removed when set to true message is moved to special table called PoisonQueue
 
 ## Persistence
 
