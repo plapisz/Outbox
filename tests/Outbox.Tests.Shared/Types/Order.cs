@@ -1,7 +1,7 @@
-﻿using Outbox.Tests.Unit.Shared.Events;
+﻿using Outbox.Tests.Shared.Events;
 using Outbox.Types;
 
-namespace Outbox.Tests.Unit.Shared.Types;
+namespace Outbox.Tests.Shared.Types;
 
 public sealed class Order : OutboxEventSource
 {
@@ -29,6 +29,6 @@ public sealed class Order : OutboxEventSource
         IsConfirmed = true;
         ConfirmedAt = confirmedAt;
 
-        AddOutboxEvent(new OrderConfirmed(Id, Number, ConfirmedAt.Value, CustomerEmail)); 
+        AddOutboxEvent(new OrderConfirmed(Id, Number, ConfirmedAt.Value, CustomerEmail));
     }
 }

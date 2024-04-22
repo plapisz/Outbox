@@ -1,8 +1,8 @@
 ﻿using Outbox.Events.Handlers;
 
-namespace Outbox.Tests.Unit.Shared.Events.Handlers;
+namespace Outbox.Tests.Shared.Events.Handlers;
 
-internal sealed class OrderCreatedHandler : IOutboxEventHandler<OrderCreated>
+public sealed class OrderCreatedHandler : IOutboxEventHandler<OrderCreated>
 {
     public Task HandleAsync(OrderCreated @event)
     {

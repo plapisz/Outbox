@@ -1,6 +1,6 @@
 ﻿using FluentAssertions;
-using Outbox.Tests.Unit.Shared.Events;
-using Outbox.Tests.Unit.Shared.Types;
+using Outbox.Tests.Shared.Events;
+using Outbox.Tests.Shared.Types;
 using Outbox.Types;
 using Xunit;
 

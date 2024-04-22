@@ -1,8 +1,8 @@
 ﻿using Outbox.Events.Handlers;
 
-namespace Outbox.Tests.Unit.Shared.Events.Handlers;
+namespace Outbox.Tests.Shared.Events.Handlers;
 
-internal sealed class OrderConfirmedHandler : IOutboxEventHandler<OrderConfirmed>
+public sealed class OrderConfirmedHandler : IOutboxEventHandler<OrderConfirmed>
 {
     public Task HandleAsync(OrderConfirmed @event)
     {

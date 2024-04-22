@@ -7,8 +7,8 @@ using Outbox.Processors;
 using Outbox.Repositories;
 using Outbox.Serializers;
 using Outbox.Services;
-using Outbox.Tests.Unit.Shared.Events;
-using Outbox.Tests.Unit.Shared.Events.Handlers;
+using Outbox.Tests.Shared.Events;
+using Outbox.Tests.Shared.Events.Handlers;
 using Outbox.Time;
 using Xunit;
 

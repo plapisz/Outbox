@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Outbox\Outbox.csproj" />
+    <ProjectReference Include="..\Outbox.Tests.Shared\Outbox.Tests.Shared.csproj" />
   </ItemGroup>
 
 </Project>

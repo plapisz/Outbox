@@ -3,8 +3,8 @@ using Outbox.Dispatchers;
 using Outbox.Entities;
 using Outbox.Repositories;
 using Outbox.Serializers;
-using Outbox.Tests.Unit.Shared.Events;
-using Outbox.Tests.Unit.Shared.Types;
+using Outbox.Tests.Shared.Events;
+using Outbox.Tests.Shared.Types;
 using Outbox.Time;
 using Xunit;
 
@@ -16,7 +16,7 @@ public class OutboxEventDispatcherTests
     public async Task dispatch_outbox_event_async_should_call_outbox_message_repository_add_async()
     {
         var order = CreateOrder();
-        var type = "Outbox.Tests.Unit.Shared.Events.OrderCreated";
+        var type = "Outbox.Tests.Shared.Events.OrderCreated";
         var json = "{\"Id\":\"814b3ef3-8fcc-4af6-bf5d-9f6562b886de\",\"Number\":\"test-1\",\"CreatedAt\":\"2024-03-19T17:41:11.2140516+01:00\",\"IsConfirmed\":false,\"ConfirmedAt\":null,\"CustomerEmail\":\"johndoe@exmail.com\",\"OutboxEvents\":[{}]}";
         var now = DateTime.UtcNow;
         _serializer.Serialize(Arg.Any<OrderCreated>(), typeof(OrderCreated)).Returns(json);
