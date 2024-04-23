@@ -11,6 +11,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<InternalsVisibleTo Include="Outbox.Tests.Shared" />
 		<InternalsVisibleTo Include="Outbox.Tests.Unit" />
 		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
 	</ItemGroup>
