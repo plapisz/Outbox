@@ -8,6 +8,7 @@ using Outbox.RetryPolicy.NextRetryAttemptsStrategies.Resolvers;
 using Outbox.RetryPolicy.Options;
 using Outbox.RetryPolicy.RemoveMessageStrategies.Resolvers;
 using Outbox.Serializers;
+using Outbox.Tests.Shared.Builders;
 using Outbox.Tests.Shared.Events;
 using Outbox.Tests.Shared.Factories;
 using Outbox.Time;
@@ -20,7 +21,12 @@ public class OutboxMessageProcessorTests
     [Fact]
     public async Task process_async_should_call_handler_and_delete_async()
     {
-        var orderCreated = GetOrderCreatedEvent();
+        var orderCreated = new OrderCreatedBuilder()
+            .WithOrderId(Guid.NewGuid())
+            .WithOrderNumber("test-1")
+            .WithOrderCreationDate(DateTime.Now)
+            .WithCustomerEmail("johndoe@exmail.com")
+            .Create();
         var message = OutboxMessageFactory.Create(orderCreated);
         _outboxMessageRepository.GetAllToProcessAsync().Returns(new List<OutboxMessage> { message });
         _outboxEventSerializer.Deserialize(message.Data, typeof(OrderCreated))
@@ -63,10 +69,4 @@ public class OutboxMessageProcessorTests
             serviceProvider,
             new RetryPolicyOptions());
     }
-
-    private static OrderCreated GetOrderCreatedEvent()
-     => new(Guid.Parse("814b3ef3-8fcc-4af6-bf5d-9f6562b886de"),
-         "test-1",
-         DateTime.Parse("2024-03-19T17:41:11.2140516+01:00"),
-         "johndoe@exmail.com");
 }
