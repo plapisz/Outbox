@@ -22,10 +22,10 @@ public class OutboxMessageProcessorTests
     public async Task process_async_should_call_handler_and_delete_async()
     {
         var orderCreated = new OrderCreatedBuilder()
-            .WithOrderId(Guid.NewGuid())
-            .WithOrderNumber("test-1")
-            .WithOrderCreationDate(DateTime.Now)
-            .WithCustomerEmail("johndoe@exmail.com")
+            .WithRandomOrderId()
+            .WithRandomOrderNumber()
+            .WithRandomOrderCreationDate()
+            .WithRandomCustomerEmail()
             .Create();
         var message = OutboxMessageFactory.Create(orderCreated);
         _outboxMessageRepository.GetAllToProcessAsync().Returns(new List<OutboxMessage> { message });
